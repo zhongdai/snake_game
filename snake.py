@@ -184,13 +184,25 @@ class Stage(object):
             if key == -1:
                 pass
             elif key == ord('k') or key == curses.KEY_UP:
-                self.snake.direction = UP
+                if self.snake.direction == DOWN:
+                    pass
+                else:
+                    self.snake.direction = UP
             elif key == ord('l') or key == curses.KEY_RIGHT:
-                self.snake.direction = RIGHT
+                if self.snake.direction == LEFT:
+                    pass
+                else:
+                    self.snake.direction = RIGHT
             elif key == ord('j') or key == curses.KEY_DOWN:
-                self.snake.direction = DOWN
+                if self.snake.direction == UP:
+                    pass
+                else:
+                    self.snake.direction = DOWN
             elif key == ord('h') or key == curses.KEY_LEFT:
-                self.snake.direction = LEFT
+                if self.snake.direction == RIGHT:
+                    pass
+                else:
+                    self.snake.direction = LEFT
             elif key == ord('q'):
                 curses.endwin()
                 break
