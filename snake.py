@@ -136,7 +136,7 @@ class Stage(object):
     
     def refresh_snake(self):
         for p in self.snake._body:
-            self.screen.addstr(p.y, p.x,'#')
+            self.screen.addstr(p.y, p.x,'█')
     
 
     def run(self):
@@ -217,7 +217,7 @@ class Stage(object):
                 self.SPEED = 1000 - len(self.snake)
                 self.screen.timeout(self.SPEED)
 
-                self.screen.addstr(food.y, food.x,'#',curses.color_pair(3))
+                self.screen.addstr(food.y, food.x,'█',curses.color_pair(3))
                 food = self._generate_food_p()
                 self._update_info(4, "Food ({},{})            ".format(food.y, food.x))
             else:
