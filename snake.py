@@ -6,21 +6,21 @@ import time
 import random
 
 locale.setlocale(locale.LC_ALL, "")
-code = locale.getpreferredencoding()  
+code = locale.getpreferredencoding()
 
 UP = 0
 RIGHT = 1
 DOWN = 2
 LEFT = 3
 
+
 class Snake(object):
     def __init__(self, p, direction):
-        """init a snake, start from (x,y) with direction
-        """
+        """init a snake, start from (x,y) with direction"""
         self.direction = direction
         self._body = list()
         self._body.append(p)
-    
+
     def __len__(self):
         return len(self._body)
 
@@ -42,19 +42,18 @@ class Snake(object):
 
     def is_food(self, p):
         return self._next_point() == p
-        
+
     def has_point(self, other):
         """Check if the point on Snake"""
         ans = False
         for p in self._body:
-            if p  == other:
+            if p == other:
                 ans = True
                 break
         return ans
 
     def eat(self, p):
-        """eat a new point, append to the last
-        """
+        """eat a new point, append to the last"""
         self._body.insert(0, p)
 
     def move(self):
@@ -70,7 +69,6 @@ class Snake(object):
             self._body = self._body[:-1]
 
             return (new_pos, old_tail)
-
 
 
 class Point(object):
@@ -93,8 +91,8 @@ class Stage(object):
         curses.start_color()
         curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
         curses.init_pair(2, curses.COLOR_CYAN, curses.COLOR_BLACK)
-        curses.init_pair(3, curses.COLOR_RED, curses.COLOR_BLACK)              
-        curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)        
+        curses.init_pair(3, curses.COLOR_RED, curses.COLOR_BLACK)
+        curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)
         curses.curs_set(0)
 
         self.screen.keypad(True)
@@ -108,40 +106,38 @@ class Stage(object):
         self.screen.timeout(self.SPEED)
         self.screen.vline(0, self.MIN_X, curses.ACS_VLINE, self.MAX_Y)
         self.screen.addch(0, self.MIN_X, curses.ACS_TTEE)
-        self.screen.addch(self.MAX_Y-1,30,curses.ACS_BTEE)
+        self.screen.addch(self.MAX_Y - 1, 30, curses.ACS_BTEE)
 
-        self.screen.addstr(1,1,'Information',curses.color_pair(1))
-        self.screen.addstr(10,1,'Press q to exit',curses.color_pair(4))
-        self.screen.addstr(11,1,'Use arrow to control',curses.color_pair(4))
+        self.screen.addstr(1, 1, "Information", curses.color_pair(1))
+        self.screen.addstr(10, 1, "Press q to exit", curses.color_pair(4))
+        self.screen.addstr(11, 1, "Use arrow to control", curses.color_pair(4))
 
-    
     def _generate_food_p(self):
-        rand_x = random.randint(self.MIN_X + 1, self.MAX_X -2)
-        rand_y = random.randint(self.MIN_Y + 1, self.MAX_Y -2)
+        rand_x = random.randint(self.MIN_X + 1, self.MAX_X - 2)
+        rand_y = random.randint(self.MIN_Y + 1, self.MAX_Y - 2)
         food = Point(rand_x, rand_y)
         while self.snake.has_point(food):
-            rand_x = random.randint(self.MIN_X + 1, self.MAX_X -2)
-            rand_y = random.randint(self.MIN_Y + 1, self.MAX_Y -2)
+            rand_x = random.randint(self.MIN_X + 1, self.MAX_X - 2)
+            rand_y = random.randint(self.MIN_Y + 1, self.MAX_Y - 2)
             food = Point(rand_x, rand_y)
         return food
 
     def _on_wall(self, p):
-        if p.x in (self.MIN_X , self.MAX_X-1) or p.y in (self.MIN_Y, self.MAX_Y-1):
+        if p.x in (self.MIN_X, self.MAX_X - 1) or p.y in (self.MIN_Y, self.MAX_Y - 1):
             return True
         else:
             return False
 
     def _update_info(self, y, info):
-        self.screen.addstr(y,1,info,curses.color_pair(1))
-    
+        self.screen.addstr(y, 1, info, curses.color_pair(1))
+
     def refresh_snake(self):
         for p in self.snake._body:
-            self.screen.addstr(p.y, p.x,'█')
-    
+            self.screen.addstr(p.y, p.x, "█")
 
     def run(self):
         step_counter = 0
-        p1 = Point(35,2)
+        p1 = Point(35, 2)
         self.snake = Snake(p1, RIGHT)
         for _ in range(10):
             next_p = self.snake._next_point()
@@ -164,12 +160,14 @@ class Stage(object):
         #     if not self._on_wall(next_p):
         #         self.snake.eat(next_p)
         # self.snake.direction = DOWN
-            
-        
-
 
         self._update_info(2, "Length {}".format(len(self.snake)))
-        self._update_info(3, "Head ({},{})          ".format(self.snake._body[0].y, self.snake._body[0].x))
+        self._update_info(
+            3,
+            "Head ({},{})          ".format(
+                self.snake._body[0].y, self.snake._body[0].x
+            ),
+        )
         food = self._generate_food_p()
         self._update_info(4, "Food ({},{})          ".format(food.y, food.x))
 
@@ -183,33 +181,33 @@ class Stage(object):
 
             if key == -1:
                 pass
-            elif key == ord('k') or key == curses.KEY_UP:
+            elif key == ord("k") or key == curses.KEY_UP:
                 if self.snake.direction == DOWN:
                     pass
                 else:
                     self.snake.direction = UP
-            elif key == ord('l') or key == curses.KEY_RIGHT:
+            elif key == ord("l") or key == curses.KEY_RIGHT:
                 if self.snake.direction == LEFT:
                     pass
                 else:
                     self.snake.direction = RIGHT
-            elif key == ord('j') or key == curses.KEY_DOWN:
+            elif key == ord("j") or key == curses.KEY_DOWN:
                 if self.snake.direction == UP:
                     pass
                 else:
                     self.snake.direction = DOWN
-            elif key == ord('h') or key == curses.KEY_LEFT:
+            elif key == ord("h") or key == curses.KEY_LEFT:
                 if self.snake.direction == RIGHT:
                     pass
                 else:
                     self.snake.direction = LEFT
-            elif key == ord('q'):
+            elif key == ord("q"):
                 curses.endwin()
                 break
             else:
                 pass
 
-            self.screen.addstr(food.y,food.x,'@',curses.color_pair(2))
+            self.screen.addstr(food.y, food.x, "@", curses.color_pair(2))
 
             if self.snake.is_food(food):
                 self.snake.eat(food)
@@ -217,7 +215,7 @@ class Stage(object):
                 self.SPEED = 1000 - len(self.snake)
                 self.screen.timeout(self.SPEED)
 
-                self.screen.addstr(food.y, food.x,'█',curses.color_pair(3))
+                self.screen.addstr(food.y, food.x, "█", curses.color_pair(3))
                 food = self._generate_food_p()
                 self._update_info(4, "Food ({},{})            ".format(food.y, food.x))
             else:
@@ -230,7 +228,7 @@ class Stage(object):
                 else:
                     self.refresh_snake()
                     self._update_info(3, "Head ({},{})         ".format(head.y, head.x))
-                    self.screen.addstr(tail.y, tail.x, ' ')
+                    self.screen.addstr(tail.y, tail.x, " ")
 
 
 def main():
@@ -238,6 +236,6 @@ def main():
     # stage.run()
     stage.run()
 
-if __name__ == '__main__':
-    main()
 
+if __name__ == "__main__":
+    main()
